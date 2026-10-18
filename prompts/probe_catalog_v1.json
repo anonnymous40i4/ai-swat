@@ -1,0 +1,72 @@
+{
+  "catalog_version": "probe-catalog-v1",
+  "rubric_version": "rubric-v1",
+  "variants_rule": "Każdy szablon poniżej występuje w bundlu także w wariantach lustrzanych (zamiana ról/płci postaci trzecich, dobór do puli użytkownika). Normy badane i rubryka są identyczne; wyniki między wariantami podlegają testom biasu ±0.1.",
+  "score_scale_evidence": { "min": -1.0, "max": 1.0, "note": "poziomy rubryki -2..+2 mapowane liniowo: score = level/2" },
+  "rationale_codes": [
+    "DEESCALATION_EXPLICIT", "PROTECTS_WEAKER_PARTY", "VENTING_WITHOUT_HARM_ENDORSEMENT",
+    "HUMILIATION_ENDORSED", "VIOLENCE_ENDORSED", "NO_MEANS_STOP_EXPLICIT",
+    "PRESSURE_AFTER_NO_ENDORSED", "INTENT_LYING_REJECTED", "INTENT_LYING_ENDORSED",
+    "HONEST_CASUAL_INTENT_ACCEPTED", "AMBIVALENT_NO_STANCE", "JOKE_NO_STANCE",
+    "SELF_REFLECTION_ADMISSION", "PERSPECTIVE_TAKING_PRESENT", "PERSPECTIVE_TAKING_ABSENT"
+  ],
+  "probes": [
+    {
+      "probe_id": "SJT-AGG-01",
+      "title_internal": "Wylany drink",
+      "fsm_stages": ["STRESS_CONFLICT", "CONSISTENCY"],
+      "trait_keys": ["safety_non_aggression", "safety_accountability", "repair_after_conflict", "conflict_directness"],
+      "cooldown_days": 14,
+      "anecdote_template_pl": "Słuchaj, muszę Ci to opowiedzieć, bo do dziś nie wiem, co o tym myśleć. Kumpel był na trzeciej randce, fajna knajpa, on wystrojony. Kelner — młody chłopak, może pierwszy tydzień w pracy — potyka się i połowa drinka ląduje kumplowi na koszuli. Chłopak przeprasza chyba ze 10 razy, a kumpel wstaje i przy całej sali: »Ty w ogóle wiesz, ile ta koszula kosztuje? Ogarnij się, pajacu«. Jego randka próbuje tonować, a on jeszcze do niej: »No co, mam udawać, że nic się nie stało?«. Powiedz szczerze — przesadził, czy po prostu postawił granice i dziewczyna za mocno to wzięła do siebie?",
+      "branches": [
+        { "when": "usprawiedliwia krzyk", "follow_up_pl": "OK, a gdyby chłopak dalej przepraszał, a on jeszcze przez minutę przy niej go »ustawiał« — nadal spoko, czy jest jakaś granica?" },
+        { "when": "krytykuje zachowanie kumpla", "follow_up_pl": "A co byś zrobił na jego miejscu, z mokrą koszulą i randką obok? Szczerze, bez wersji pod publikę." },
+        { "when": "żart bez stanowiska", "follow_up_pl": null, "action": "abandon_probe_retry_another_day_different_scenario" }
+      ],
+      "rubric": [
+        { "level": 2,  "signal": "deeskalacja, ochrona słabszej strony (obsługa), humor ratujący sytuację, rozróżnienie złości od krzyku" },
+        { "level": 1,  "signal": "irytacja zrozumiała, krzyk/poniżanie nie; spokojna reklamacja" },
+        { "level": 0,  "signal": "ambiwalencja bez stanowiska także po dopytaniu" },
+        { "level": -1, "signal": "»należało mu się«, krzyk jako stawianie granic" },
+        { "level": -2, "signal": "poparcie poniżania/grożenia obsłudze, szydzenie z partnerki, przemoc jako nauczka" }
+      ],
+      "possible_flags": [ { "flag_code": "AGGRESSION_ENDORSEMENT", "when_level": -2, "severity_default": 3 } ],
+      "false_positive_guards": ["wulgaryzmy przy konkluzji deeskalacyjnej nie obniżają wyniku", "przyznanie »wściekłbym się, ale bym odpuścił« = poziom >= +1"]
+    },
+    {
+      "probe_id": "SJT-CONS-01",
+      "title_internal": "Strategia kolegi",
+      "fsm_stages": ["BOUNDARIES_CONSENT", "CONSISTENCY"],
+      "trait_keys": ["safety_consent_respect", "safety_boundary_respect", "safety_non_coercion", "honesty_transparency", "intent_seriousness"],
+      "cooldown_days": 14,
+      "anecdote_template_pl": "A propos randek — znajomy odkrył ostatnio »strategię«. Mówi dziewczynom, że szuka czegoś poważnego, chociaż sam mi przyznał, że chodzi mu głównie o seks. Twierdzi, że jak powie prawdę, to »nic z tego nie będzie«. A jak któraś mówi, że dziś nie chce iść dalej, to on uważa, że »trzeba jeszcze trochę ponegocjować, napić się, wrócić do tematu za godzinę — czasem trzeba człowieka zachęcić«. Śmialiśmy się, ale sam nie wiem… skuteczny gość, czy jednak coś tu nie gra?",
+      "branches": [
+        { "when": "potępia oszukiwanie zamiarów", "follow_up_pl": "A sam miałeś kiedyś pokusę trochę podkolorować, jak bardzo Ci zależy? Bez oceniania, serio pytam." },
+        { "when": "śmieje się / »każdy tak robi«", "follow_up_pl": "Dobra, a ta część z »negocjowaniem« po usłyszanym »nie« — dla Ciebie to jeszcze flirt czy już przekroczenie?" },
+        { "when": "popiera strategię", "follow_up_pl": "A gdyby tak zrobił ktoś Twojej bliskiej osobie — dalej strategia, czy zmienia się ocena?" }
+      ],
+      "rubric": [
+        { "level": 2,  "signal": "kłamstwo o zamiarze = manipulacja; »nie/dziś nie« kończy temat; uczciwy zamiar niezobowiązujący oceniany neutralnie" },
+        { "level": 1,  "signal": "ściemnianie nie, ale dopuszczalne jedno spokojne upewnienie się bez presji" },
+        { "level": 0,  "signal": "brak stanowiska po dwóch dopytaniach" },
+        { "level": -1, "signal": "»drobne podkolorowanie zamiarów jest normalne«; obrażanie się po odmowie jako strata twarzy" },
+        { "level": -2, "signal": "»nie znaczy: przekonuj«; alkohol jako narzędzie; kłamstwo o zamiarze jako element gry" }
+      ],
+      "possible_flags": [
+        { "flag_code": "CONSENT_DISREGARD", "when": "jawna akceptacja działania po odmowie", "severity_default": 4 },
+        { "flag_code": "DECEPTION_ENDORSEMENT", "when": "popieranie lub przyznanie kłamstwa o zamiarach wobec konkretnych osób", "severity_default": 3 }
+      ],
+      "false_positive_guards": [
+        "jawna deklaracja »szukam tylko niezobowiązującego« podnosi honesty_transparency i nigdy nie jest flagą",
+        "sarkazm/żart wymaga doprecyzowania gałęzią; przy nadal niejasnym tonie brak dowodu zamiast niskiego wyniku"
+      ]
+    }
+  ],
+  "todo_min_probe_coverage": {
+    "note": "Do hard-pointu potrzeba >=3 różnych prób na cechę. Brakujące do zaprojektowania (KROK C):",
+    "missing": ["SJT-AGG-02 (frustracja drogowa/kolejka)", "SJT-AGG-03 (partner odwołuje plany w ostatniej chwili)",
+                "SJT-CONS-02 (współlokator wchodzi bez pukania / telefon partnera bez pytania)",
+                "SJT-CONS-03 (prośba o nierealny kompromis / granica czasowa)",
+                "SJT-INT-01..03 (spójność zamiaru w parach parapraz)"]
+  }
+}
