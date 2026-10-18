@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-swat.local/contracts/trait_evidence.schema.json",
+  "title": "TraitEvidenceSubmission",
+  "description": "Jedyny dozwolony ładunek z Osobistego Agenta (on-device) do Edge Function ingest-evidence. Bez cytatów z rozmowy.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_id", "prompt_version", "model_id", "fsm_state", "evidence", "safety_flags", "signed_at"],
+  "properties": {
+    "session_id": { "type": "string", "format": "uuid" },
+    "prompt_version": { "type": "string", "minLength": 1 },
+    "model_id": { "type": "string", "minLength": 1 },
+    "fsm_state": { "type": "string", "enum": ["ONBOARDING", "RAPPORT_VALUES", "STRESS_CONFLICT", "BOUNDARIES_CONSENT", "CONSISTENCY", "SYNTHESIS"] },
+    "evidence": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["probe_id", "trait_key", "score", "confidence", "evidence_class", "evidence_hash", "rationale_code"],
+        "properties": {
+          "probe_id": { "type": "string", "pattern": "^[A-Z0-9-]{3,32}$" },
+          "trait_key": { "type": "string", "pattern": "^[a-z0-9_]{3,48}$" },
+          "score": { "type": "number", "minimum": -1, "maximum": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence_class": { "type": "string", "enum": ["self_declared", "sjt_response", "consistency", "user_correction"] },
+          "evidence_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+          "rationale_code": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "safety_flags": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["flag_code", "severity", "confidence", "evidence_hash"],
+        "properties": {
+          "flag_code": { "type": "string", "enum": ["THREAT_TO_IDENTIFIABLE_PERSON", "AGGRESSION_ENDORSEMENT", "CONSENT_DISREGARD", "COERCION_ENDORSEMENT", "DECEPTION_ENDORSEMENT", "MINOR_SAFETY", "SELF_HARM_RISK"] },
+          "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "memory_slot_updates": {
+      "type": "object",
+      "description": "Tylko klucze deklarowane przez aplikację; Edge Function odrzuca klucze spoza whitelisty (np. zakazanych kategorii danych).",
+      "additionalProperties": { "type": ["string", "number", "boolean", "null"] },
+      "maxProperties": 32
+    },
+    "next_fsm_state": { "type": "string", "enum": ["ONBOARDING", "RAPPORT_VALUES", "STRESS_CONFLICT", "BOUNDARIES_CONSENT", "CONSISTENCY", "SYNTHESIS", "READY_FOR_SWARM", "PAUSED"] },
+    "signed_at": { "type": "string", "format": "date-time" },
+    "device_signature": { "type": "string", "description": "Podpis całości kluczem z device_keys (algorytm ustalany przez klienta, np. Ed25519)." }
+  }
+}

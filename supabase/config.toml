@@ -1,0 +1,24 @@
+# Minimalna konfiguracja funkcji dla AI Swarm-Match.
+# Sekretów NIE trzymamy w repo: ustawiane przez `supabase secrets set`.
+# Wymagane sekrety funkcji:
+#   SWARM_SHARED_SECRET        (HMAC Supabase<->Abacus; ta sama wartość jako org secret w Abacus)
+#   DISPATCH_SECRET            (nagłówek x-dispatch-secret dla crona swarm-dispatch)
+#   ABACUS_MASTER_DEPLOYMENT_ID
+#   ABACUS_DEPLOYMENT_TOKEN
+#   ALLOW_UNSIGNED_EVIDENCE    (tylko lokalnie/dev = "true"; produkcyjnie nieobecne)
+
+project_id = "ai-swarm-match"
+
+# Telefon -> ingest: JWT użytkownika wymagane (dodatkowo funkcja sama waliduje usera).
+[functions.ingest-evidence]
+verify_jwt = true
+
+# Abacus/cron nie mają JWT Supabase: autoryzacja HMAC / shared secret wewnątrz funkcji.
+[functions.swarm-candidates]
+verify_jwt = false
+
+[functions.abacus-match-callback]
+verify_jwt = false
+
+[functions.swarm-dispatch]
+verify_jwt = false

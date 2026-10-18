@@ -1,0 +1,44 @@
+{
+  "config_version": "pers-agent-config-v1.0",
+  "prompt_file": "personal_agent_llama_system_prompt.txt",
+  "prompt_version": "pers-agent-v1.0",
+  "model": {
+    "family": "llama",
+    "recommended": "Llama-3.1-8B-Instruct",
+    "quantization": "Q4_K_M",
+    "context_tokens": 8192,
+    "note": "Model 3B nie jest zalecany do przebiegu ewaluacji (ryzyko niestabilnego JSON i rubryk)."
+  },
+  "generation": {
+    "conversation": { "temperature": 0.65, "top_p": 0.9, "top_k": 40, "repeat_penalty": 1.08, "max_tokens": 320 },
+    "evaluation":   { "temperature": 0.10, "top_p": 0.9, "top_k": 20, "repeat_penalty": 1.0,  "max_tokens": 1024 }
+  },
+  "chat_template": {
+    "format": "llama3",
+    "system_header": "<|start_header_id|>system<|end_header_id|>",
+    "user_header": "<|start_header_id|>user<|end_header_id|>",
+    "assistant_header": "<|start_header_id|>assistant<|end_header_id|>",
+    "eot": "<|eot_id|>"
+  },
+  "runtime_placeholders": ["AGENT_NAME", "USER_LOCALE", "SESSION_DAY", "FSM_STATE", "MEMORY_SLOTS_JSON", "COVERAGE_GAPS", "ALLOWED_PROBES_JSON", "CONSENT_SCOPES"],
+  "evidence_channel": {
+    "mode": "separate_evaluation_call",
+    "open_delimiter": "<<<EVIDENCE_JSON",
+    "close_delimiter": ">>>",
+    "contract": "../contracts/trait_evidence.schema.json",
+    "on_invalid_json": "reject_evidence_and_log_locally_never_repair_silently",
+    "strip_before_display": true
+  },
+  "session_guards": {
+    "max_probes_per_session": 2,
+    "never_two_probes_in_a_row": true,
+    "min_free_chat_share_of_turns": 0.6,
+    "probe_abandon_on_fatigue_or_distress": true,
+    "min_days_between_same_trait_probes": 1
+  },
+  "voice": {
+    "stt_on_device_only": true,
+    "emotion_inference_from_voice": "disabled",
+    "raw_audio_retention": "delete_immediately_after_transcription"
+  }
+}

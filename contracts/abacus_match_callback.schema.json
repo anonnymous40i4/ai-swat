@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-swat.local/contracts/abacus_match_callback.schema.json",
+  "title": "MasterResultCallbackV1",
+  "description": "Wynik Master Swat Agenta wysyłany do Supabase Edge Function abacus-match-callback. Supabase ponownie waliduje eligibilność i dopiero wtedy zapisuje match oraz wysyła push.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "event_id", "run_ref", "master_version", "source_swarm_uid", "decision", "candidates_seen", "candidates_scored", "proposals", "completed_at"],
+  "properties": {
+    "schema": { "type": "string", "const": "master-result-v1" },
+    "event_id": { "type": "string", "format": "uuid" },
+    "run_ref": { "type": "string", "format": "uuid" },
+    "master_version": { "type": "string", "const": "master-v1.0" },
+    "source_swarm_uid": { "type": "string", "format": "uuid" },
+    "decision": { "type": "string", "enum": ["MATCHED", "NO_MATCH", "INELIGIBLE"] },
+    "candidates_seen": { "type": "integer", "minimum": 0, "maximum": 200 },
+    "candidates_scored": { "type": "integer", "minimum": 0, "maximum": 200 },
+    "best_similarity": { "type": ["number", "null"], "minimum": -1, "maximum": 1 },
+    "proposals": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_swarm_uid", "raw_similarity", "display_score", "component_scores", "overlap_dimensions"],
+        "properties": {
+          "candidate_swarm_uid": { "type": "string", "format": "uuid" },
+          "raw_similarity": { "type": "number", "minimum": 0.78, "maximum": 1 },
+          "display_score": { "type": "integer", "minimum": 80, "maximum": 99 },
+          "component_scores": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["intent", "values", "communication", "lifestyle"],
+            "properties": {
+              "intent": { "type": "number", "minimum": -1, "maximum": 1 },
+              "values": { "type": "number", "minimum": -1, "maximum": 1 },
+              "communication": { "type": "number", "minimum": -1, "maximum": 1 },
+              "lifestyle": { "type": "number", "minimum": -1, "maximum": 1 }
+            }
+          },
+          "overlap_dimensions": { "type": "integer", "minimum": 24, "maximum": 32 }
+        }
+      }
+    },
+    "completed_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-swat.local/contracts/abacus_swarm_event.schema.json",
+  "title": "SwarmEventToAbacus",
+  "description": "Zdarzenie wysyłane przez Supabase Edge Function swarm-dispatch jako keywordArguments do Abacus executeAgent. Celowo BEZ wektora: Abacus pobiera aktualny stan z chronionego endpointu swarm-candidates.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "swarm_uid", "vector_version", "idempotency_key", "issued_at"],
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "event_type": { "type": "string", "enum": ["VECTOR_READY", "VECTOR_UPDATED", "POS_PASSED", "PROFILE_READY"] },
+    "swarm_uid": { "type": "string", "format": "uuid" },
+    "vector_version": { "type": "string", "const": "vec-v1" },
+    "idempotency_key": { "type": "string", "minLength": 8, "maxLength": 200 },
+    "issued_at": { "type": "string", "format": "date-time" }
+  }
+}
